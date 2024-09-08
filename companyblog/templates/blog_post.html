@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h1 class="card-title">{{ post.title }}</h1>
+          <p class="card-text">{{ post.text }}</p>
+          <img src="{{ url_for('static', filename='post_pics/' + post.image_file) }}" class="img-fluid" alt="Post Image">
+          <p class="text-muted">Author: <a href="{{ url_for('users.user_posts', username=post.user.username) }}" class="text-decoration-none">{{ post.user.username }}</a></p>
+          <p class="text-muted">Date: {{ post.date.strftime('%B %d, %Y') }}</p>
+        </div>
+      </div>
+
+      <div class="reactions-section">
+        <div class="reactions-summary" id="reactions-summary">
+          <button class="reaction-icon" data-reaction="like">👍 <span id="like-count">{{ reaction_counts['like'] }}</span></button>
+          <button class="reaction-icon" data-reaction="love">❤️ <span id="love-count">{{ reaction_counts['love'] }}</span></button>
+          <button class="reaction-icon" data-reaction="haha">😂 <span id="haha-count">{{ reaction_counts['haha'] }}</span></button>
+          <button class="reaction-icon" data-reaction="wow">😮 <span id="wow-count">{{ reaction_counts['wow'] }}</span></button>
+          <button class="reaction-icon" data-reaction="sad">😢 <span id="sad-count">{{ reaction_counts['sad'] }}</span></button>
+          <button class="reaction-icon" data-reaction="angry">😡 <span id="angry-count">{{ reaction_counts['angry'] }}</span></button>
+        </div>
+      </div>
+      <div class="jumbotron">
+
+            <div>
+            <a class="btn btn-secondary" href="{{ url_for('blog_posts.update', blog_post_id=post.id) }}">Update</a>
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#del_modal">Delete</button>
+            </div>
+    
+    </div>
+
+      <div class="comments-section">
+        {% for comment in post.comments %}
+          <div class="card mb-3">
+            <div class="card-body">
+              <p class="card-text">{{ comment.body }}</p>
+              <small class="text-muted">By {{ comment.user.username }} on {{ comment.timestamp.strftime('%B %d, %Y') }}</small>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      {% if current_user.is_authenticated %}
+        <div class="add-comment-section mt-4">
+          <h3>Add a comment</h3>
+          <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+              {{ form.body.label(class="form-label") }}
+              {{ form.body(class="form-control") }}
+            </div>
+            <div class="form-group mt-2">
+              {{ form.submit(class="btn btn-primary") }}
+            </div>
+          </form>
+        </div>
+      {% else %}
+        <p class="mt-4"><a href="{{ url_for('users.login') }}">Log in</a> to add a comment.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{# https://getbootstrap.com/docs/4.1/components/modal/ #}
+  {# Notice how the link with the id to the button above! #}
+  <div class="modal" tabindex="-1" role="dialog" id="del_modal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete Post Pop up Modal</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete this blog post?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+          <form action="{{ url_for('blog_posts.delete_post', blog_post_id=post.id) }}" method="POST">
+            <input class="btn btn-danger" type="submit" value="Delete">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<style>
+.reactions-section {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.reactions-summary {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.reaction-icon {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.reaction-icon span {
+  font-size: 16px;
+  margin-left: 5px;
+}
+
+.reaction-icon:hover {
+  transform: scale(1.2);
+  color: #ffcc00;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const reactionIcons = document.querySelectorAll('.reaction-icon');
+  reactionIcons.forEach(icon => {
+    icon.addEventListener('click', function() {
+      const reactionType = this.getAttribute('data-reaction');
+      const postId = {{ post.id }};
+      const url = `{{ url_for('blog_posts.react_to_post', blog_post_id=post.id, reaction_type='REPLACE_REACTION_TYPE') }}`.replace('REPLACE_REACTION_TYPE', reactionType);
+      
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ form.csrf_token._value() }}'
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.status === 'success') {
+          document.getElementById('like-count').textContent = data.count['like'];
+          document.getElementById('love-count').textContent = data.count['love'];
+          document.getElementById('haha-count').textContent = data.count['haha'];
+          document.getElementById('wow-count').textContent = data.count['wow'];
+          document.getElementById('sad-count').textContent = data.count['sad'];
+          document.getElementById('angry-count').textContent = data.count['angry'];
+        } else {
+          console.error('Error:', data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Fetch error:', error);
+      });
+    });
+  });
+});
+</script>
+
+{% endblock %}
+

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Following</h1>
+    <div class="row">
+        {% for user in following %}
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ user.username }}</h5>
+                    <a href="{{ url_for('users.user_posts', username=user.username) }}" class="btn btn-primary">View Profile</a>
+                    <a href="{{ url_for('users.unfollow', username=user.username) }}" class="btn btn-danger">Unfollow</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

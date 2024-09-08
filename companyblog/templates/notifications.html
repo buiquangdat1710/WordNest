@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Notifications</h1>
+    {% if notifications.items %}
+        {% for notification in notifications.items %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <p class="card-text">{{ notification.message }}</p>
+                <p class="card-text"><small class="text-muted">{{ notification.timestamp.strftime('%Y-%m-%d %H:%M') }}</small></p>
+                {% if notification.link %}
+                <a href="{{ notification.link }}" class="btn btn-primary btn-sm">View</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <nav aria-label="Notification pagination">
+            <ul class="pagination justify-content-center">
+                {% for page_num in notifications.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                    {% if notifications.page == page_num %}
+                        <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
+                    {% elif page_num %}
+                        <li class="page-item"><a class="page-link" href="{{ url_for('users.notifications', page=page_num) }}">{{ page_num }}</a></li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </nav>
+    {% else %}
+        <p>You have no notifications.</p>
+    {% endif %}
+</div>
+{% endblock %}

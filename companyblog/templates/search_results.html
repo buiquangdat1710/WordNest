@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">Search Results for "{{ query }}"</h1>
+    
+    <h2 class="h4 mb-3">Posts</h2>
+    {% if posts %}
+        {% for post in posts %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h3 class="card-title h5">
+                    <a href="{{ url_for('blog_posts.view_post', blog_post_id=post.id) }}" class="text-decoration-none">{{ post.title }}</a>
+                </h3>
+                <p class="card-text text-muted small">
+                    Posted by <a href="{{ url_for('users.user_posts', username=post.user.username) }}" class="text-decoration-none">{{ post.user.username }}</a>
+                    on {{ post.date.strftime('%Y-%m-%d') }}
+                </p>
+                <p class="card-text">{{ post.text[:200] }}{% if post.text|length > 200 %}...{% endif %}</p>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No posts found.</p>
+    {% endif %}
+
+    <h2 class="h4 mb-3 mt-5">Users</h2>
+    {% if users %}
+        <div class="row">
+        {% for user in users %}
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ user.username }}</h5>
+                        <a href="{{ url_for('users.user_posts', username=user.username) }}" class="btn btn-primary btn-sm">View Profile</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        <p>No users found.</p>
+    {% endif %}
+</div>
+{% endblock %}

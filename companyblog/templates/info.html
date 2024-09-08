@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}About WordNest{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg">
+                <div class="card-body p-5">
+                    <h1 class="display-4 text-primary mb-4">Welcome to WordNest</h1>
+                    <p class="lead text-muted mb-4">A social network where you can share your thoughts, ideas, and connect with others.</p>
+                    <hr class="my-4">
+                    <div class="mb-4">
+                        <h2 class="h4 text-secondary">Our Mission</h2>
+                        <p>
+                            WordNest is designed to bring people together, providing a platform where users can post, discuss, and engage in meaningful conversations.
+                            Whether it's a casual thought or a deep idea, WordNest is the place to let your voice be heard.
+                        </p>
+                    </div>
+                    <div class="mb-4">
+                        <h2 class="h4 text-secondary">Key Features</h2>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-feather-alt text-primary me-2"></i> Share your thoughts and ideas</li>
+                            <li><i class="fas fa-users text-primary me-2"></i> Connect with like-minded individuals</li>
+                            <li><i class="fas fa-comments text-primary me-2"></i> Engage in meaningful discussions</li>
+                            <li><i class="fas fa-globe text-primary me-2"></i> Discover diverse perspectives</li>
+                        </ul>
+                    </div>
+                    <div class="text-center">
+                        <a class="btn btn-primary btn-lg px-5" href="{{ url_for('core.index') }}" role="button">
+                            <i class="fas fa-rocket me-2"></i>Explore Posts
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .card {
+        border-radius: 15px;
+        transition: transform 0.3s ease-in-out;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    .btn-primary {
+        border-radius: 25px;
+        text-transform: uppercase;
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container my-5">
+  <div class="jumbotron text-center bg-light shadow-sm rounded">
+    <h1 class="display-4">Welcome, {{current_user.username}}!</h1>
+    <img src="{{ url_for('static', filename='profile_pics/' + current_user.profile_image) }}" class="rounded-circle mt-4 mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+    <p class="lead">{{ current_user.email }}</p>
+  </div>
+
+  <div class="card shadow p-4">
+    <h3 class="card-title text-center mb-4">Update Your Account Information</h3>
+    <form method="POST" action="" enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+
+      <div class="form-group">
+        {{ form.username.label(class="form-label") }}
+        {{ form.username(class="form-control") }}
+      </div>
+
+      <div class="form-group">
+        {{ form.email.label(class="form-label") }}
+        {{ form.email(class="form-control") }}
+      </div>
+
+      <div class="form-group">
+        {{ form.picture.label(class="form-label") }}
+        {{ form.picture(class="form-control-file") }}
+      </div>
+
+      <div class="d-grid gap-2">
+        {{ form.submit(class="btn btn-primary btn-block") }}
+      </div>
+    </form>
+  </div>
+
+  <!-- New section for user's blog posts -->
+  <div class="card shadow p-4 mt-5">
+    <h3 class="card-title text-center mb-4">Your Blog Posts</h3>
+    {% if current_user.posts %}
+      <div class="row">
+        {% for post in current_user.posts %}
+          <div class="col-md-4 mb-4">
+            <div class="card h-100">
+              {% if post.image_file %}
+                <img src="{{ url_for('static', filename='uploads/' + post.image_file) }}" class="card-img-top" alt="{{ post.title }}">
+              {% endif %}
+              <div class="card-body">
+                <h5 class="card-title">{{ post.title }}</h5>
+                <p class="card-text">{{ post.text[:100] }}{% if post.text|length > 100 %}...{% endif %}</p>
+                <a href="{{ url_for('blog_posts.view_post', blog_post_id=post.id) }}" class="btn btn-primary">Read More</a>
+              </div>
+              <div class="card-footer text-muted">
+                Posted on {{ post.date.strftime('%Y-%m-%d') }}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-center">You haven't published any blog posts yet.</p>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

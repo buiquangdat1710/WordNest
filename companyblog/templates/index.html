@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Blog Posts Section -->
+        <div class="col-md-8">
+            <h1 class="mb-4">Blog Posts</h1>
+            {% for post in blog_posts.items %}
+                <div class="card mb-4">
+                    <img src="{{ url_for('static', filename='post_pics/' + post.image_file) }}" class="card-img-top" alt="Post Image">
+                    <div class="card-body">
+                        <h2 class="card-title">{{ post.title }}</h2>
+                        <p class="card-text">{{ post.text[:200] }}...</p>
+                        <a href="{{ url_for('blog_posts.view_post', blog_post_id=post.id) }}" class="btn btn-primary">Read More</a>
+                    </div>
+                    <div class="card-footer text-muted">
+                        Posted by <a href="{{ url_for('users.user_posts', username=post.user.username) }}" class="text-decoration-none">{{ post.user.username }}</a> on {{ post.date.strftime('%B %d, %Y') }}
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="pagination justify-content-center">
+                {% if blog_posts.has_prev %}
+                    <a class="btn btn-outline-primary" href="{{ url_for('core.index', page=blog_posts.prev_num) }}">&larr; Previous</a>
+                {% endif %}
+                {% if blog_posts.has_next %}
+                    <a class="btn btn-outline-primary" href="{{ url_for('core.index', page=blog_posts.next_num) }}">Next &rarr;</a>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Information Section -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">About This WordNest</h2>
+                    <p class="card-text">
+                        Welcome to WordNest! Here you will find a variety of posts on different topics. We hope you enjoy reading and find the content useful.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

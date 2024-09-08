@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <h1>{{ legend }}</h1>
+      <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+          {{ form.title.label(class="form-label") }}
+          {{ form.title(class="form-control") }}
+        </div>
+        <div class="form-group mt-2">
+          {{ form.text.label(class="form-label") }}
+          {{ form.text(class="form-control") }}
+        </div>
+        <div class="form-group mt-2">
+          {{ form.submit(class="btn btn-primary") }}
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

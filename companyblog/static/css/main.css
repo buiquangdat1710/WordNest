@@ -1,0 +1,47 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn {
+    border-radius: 20px;
+    padding: 0.375rem 1.5rem;
+}
+
+.pagination .page-link {
+    border-radius: 20px;
+    margin: 0 2px;
+}
+
+footer {
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#search-suggestions {
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#search-suggestions div {
+    cursor: pointer;
+}
+
+#search-suggestions div:hover {
+    background-color: #f8f9fa;
+}

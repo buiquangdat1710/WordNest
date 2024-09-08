@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Friend Requests{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Friend Requests</h1>
+    {% if incoming_requests %}
+        <ul class="list-group">
+        {% for request in incoming_requests %}
+            <li class="list-group-item">
+                {{ request.sender.username }} wants to be your friend
+                <a href="{{ url_for('users.accept_friend_request', username=request.sender.username) }}" class="btn btn-success btn-sm">Accept</a>
+                <a href="{{ url_for('users.decline_friend_request', username=request.sender.username) }}" class="btn btn-danger btn-sm">Decline</a>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have no pending friend requests.</p>
+    {% endif %}
+</div>
+{% endblock %}
